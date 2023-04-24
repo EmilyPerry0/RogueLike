@@ -19,6 +19,7 @@ class Game{
     std::vector<Item> initItems();
     void loadNextLevel();
     void playLevel();
+    char getElementAtPos(const int X_POS, const int Y_POS) const;
     
     private:
     std::vector<Item> items;
@@ -123,7 +124,7 @@ void Game::playGame(){
 
     //if the player gets through a dungeon, go to the next one.
     loadNextLevel();
-    playLevel();
+    //playLevel();
 }
 
 std::vector<Item> Game::initItems(){
@@ -163,7 +164,6 @@ void Game::loadNextLevel(){
 
     //load up the level's start pos
     levelFile >> xPos >> std::skipws >> yPos;
-    std::cout << xPos << yPos;
 
     //set the player's x and y pos to the level's starting pos
     player.updateXPos(xPos);
@@ -206,6 +206,10 @@ void Game::playLevel(){
         }
 
     }
+}
+
+char Game::getElementAtPos(const int X_POS, const int Y_POS) const {
+    return this->levelArray[Y_POS][X_POS];
 }
 
 #endif
