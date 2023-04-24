@@ -12,14 +12,12 @@
 class Game{
     public:
     Game();
-    void beginGame();
-    bool doSavesExist();
-    void newGame();
     void playGame();
     std::vector<Item> initItems();
     void loadNextLevel();
-    void playLevel();
     char getElementAtPos(const int X_POS, const int Y_POS) const;
+    void updatePlayerPos(char direction);
+    void playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PLAYER_Y_POS_CHANGE);
     
     private:
     std::vector<Item> items;
@@ -33,84 +31,12 @@ class Game{
 
 };
 
+/**
+ * @brief constructs a new Game object
+*/
 Game::Game(){
     this->items = initItems();
     this->currLevel = 0;
-}
-
-/**
- * @brief runs on start, moves into newGame after a couple steps
- * 
- */
-void Game::beginGame(){
-    char input;
-    std::cout << "Starting..." << std::endl;
-    do{
-        std::cout << "Would you like to (l)oad a previous save or (c)reate a new one?" << std::endl;
-        std:: cin >> input; 
-        if(input != 'l' && input != 'c'){
-           std::cout << "That was not a valid choice. Please enter 'l' for load or 'c' for create" << std::endl;
-        }
-    }while(input != 'l' && input != 'c');
-    if(input == 'l'){
-        //print out all game log files with numbers in front of them
-        //could also be nice to display each save's stats like money, and exp n such
-        std::cout << "Above are the available saves. Please enter the number of a save to load: ";
-        std::cin >> input;
-        //validate this input
-
-        //run continueGame
-    }else{
-        //the name of the save will be whatever the player chooses to name themselves
-        //if a save with that name already exists, add "(i)" to it where i is the number of files
-        //with that same name
-            
-        //run new game start
-        newGame();
-    }    
-}
-
-/**
- * @brief check to see if the save file the player requested exists
- * 
- * return whether the  save exists
- */
-bool Game::doSavesExist(){
-    // LPCWSTR SAVESFOLDER = L"\\saves";
-    // WIN32_FIND_DATA findData;
-    // HANDLE handleFind = ::FindFirstFile(SAVESFOLDER, &findData);
-    // if(handleFind == INVALID_HANDLE_VALUE){
-    //     return false;
-    // }else{
-    //     return true;
-    // }
-
-    
-    //fs::directory_iterator("\\saves");
-    return true;
-}
-
-/**
- * @brief beginning of game setup and interface
- * 
- */
-void Game::newGame(){
-    std::string name;
-    std::cout << "Welcome to RogueLike! Please enter your rogue's name:" << std::endl;
-    std::cin >> name;
-    //if(name already exists in the filesystem){add (i) to it to differentiate}
-    outputFile.open("saves/" + name + ".log");
-
-    //set up the money, xp, food, potions, and weapons of the player's permainventory
-    outputFile << "M : 0" << std::endl
-               << "XP: 0" << std::endl
-               << "F : "  << std::endl
-               << "P : "  << std::endl
-               << "W : ";
-    //cleanup
-    outputFile.close();
-
-    playGame();
 }
 
 /**
@@ -118,15 +44,14 @@ void Game::newGame(){
  * 
  */
 void Game::playGame(){
-    //game loop where the player is thrown into a dungeon
-
-    //if the player dies at any point, return them to the hub w/ prizes
-
-    //if the player gets through a dungeon, go to the next one.
-    loadNextLevel();
-    //playLevel();
+    //start by going to the first level
+    this->loadNextLevel();
 }
 
+/**
+ * @brief initializes all possible items
+ * @return the vector containing all items
+*/
 std::vector<Item> Game::initItems(){
     std::cout << "Initializing all items..." << std::endl;
 
@@ -144,72 +69,91 @@ std::vector<Item> Game::initItems(){
  */
 void Game::loadNextLevel(){
     //levels are 60*40 rectangles
-    //character key: # = wall, X = player
+    //character key: # = wall, P = player, E = exit space
     int xPos;
     int yPos;
 
-    levelFile.open("levels/level" + std::to_string(currLevel) + ".txt");
+    //player wins
+    if(this->currLevel == 6){
+        //go to hub
+    }
+
+    this->levelFile.open("levels/level" + std::to_string(this->currLevel) + ".txt");
     //make sure the level file was properly opened
-    if(!levelFile){
+    if(!this->levelFile){
         std::cout << "file not opened";
     }
     //go through the level and enter it into a 2d array to make operations easier
     for(int row = 0; row < 40; row++){
         for(int col = 0; col < 60; col++){
-            levelFile >> std::noskipws >> this->levelArray[row][col];
+            this->levelFile >> std::noskipws >> this->levelArray[row][col];
         }
         //skip the newline characters
-        levelFile.ignore();
+        this->levelFile.ignore();
     }
 
     //load up the level's start pos
-    levelFile >> xPos >> std::skipws >> yPos;
+    this->levelFile >> xPos >> std::skipws >> yPos;
 
     //set the player's x and y pos to the level's starting pos
-    player.updateXPos(xPos);
-    player.updateYPos(yPos);
+    this->player.updateXPos(xPos);
+    this->player.updateYPos(yPos);
+    this->levelArray[yPos][xPos] = 'P';
 
     //cleanup
-    levelFile.close();
+    this->levelFile.close();
 }
 
-void Game::playLevel(){
-    //until ive got gui skills, ill use a 3x3 grid to display the surrounding area
-    bool notDead = true;
-    bool levelNotComplete = true;
-    int xPos;
-    int yPos;
-    char input;
-    bool invalidMove;
-    while(notDead && levelNotComplete){
-        //check to see if there's any restrictions on what the player can see
-        //e.g. theres a wall on one side, we don't wanna go oob to try and access it
-        //not a problem when theres just a 3x3 grid, but good to keep in mind for gui times?
-        
-        //reset invalidMove tracker
-        invalidMove = false;
+/**
+ * @brief getter function for things in the level array
+ * @return the char at a certain position in the level array
+*/
+char Game::getElementAtPos(const int X_POS, const int Y_POS) const {
+    return this->levelArray[Y_POS][X_POS];
+}
 
-        //print out a 3x3 grid of the player's surroundings
-        xPos = player.getXPos();
-        yPos = player.getYPos();
-        std::cout << levelArray[yPos-1][xPos-1] << levelArray[yPos-1][xPos] << levelArray[yPos-1][xPos+1] << std::endl
-                  << levelArray[yPos][xPos-1] << levelArray[yPos][xPos] << levelArray[yPos][xPos+1] << std::endl
-                  << levelArray[yPos+1][xPos-1] << levelArray[yPos+1][xPos] << levelArray[yPos+1][xPos+1] << std::endl << std::endl;
-        //validate the input
-        do{
-            std::cout << "Please enter (u)p, (d)own, (l)eft, or (r)ight: ";
-        std::cin >> input;
-        }while(input != 'u' && input != 'd' && input != 'l' && input != 'r');
-        //update the x or y pos of the player (validating if its a valid move that is)
-        if((input == 'u' && levelArray[yPos-1][xPos] == '#') || (input == 'd' && levelArray[yPos+1][xPos] == '#')){
-            invalidMove = true;
-        }
-
+/**
+ * @brief updates the player's position based on the key pressed
+*/
+void Game::updatePlayerPos(const char KEY){
+    //player moving up
+    if(KEY == 'w'){
+        playerSpaceCheckAndUpdate(0, -1);
+    //player moving left
+    }else if(KEY == 'a'){
+        playerSpaceCheckAndUpdate(-1, 0);
+    //player moving down
+    }else if(KEY == 's'){
+        playerSpaceCheckAndUpdate(0, 1);
+    //player moving right
+    }else if(KEY == 'd'){
+        playerSpaceCheckAndUpdate(1, 0);
     }
 }
 
-char Game::getElementAtPos(const int X_POS, const int Y_POS) const {
-    return this->levelArray[Y_POS][X_POS];
+/**
+ * @brief updates the player's positon based on which direction they should move
+*/
+void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PLAYER_Y_POS_CHANGE){
+    int playerXPos = this->player.getXPos();
+    int playerYPos = this->player.getYPos();
+    //make sure the space the player wants to move to is open
+    if(this->levelArray[playerYPos  + PLAYER_Y_POS_CHANGE][playerXPos + PLAYER_X_POS_CHANGE] != '#'){
+        if(this->levelArray[playerYPos  + PLAYER_Y_POS_CHANGE][playerXPos + PLAYER_X_POS_CHANGE] == 'E'){
+            //the player has reached the end space, so load the next level
+            this->currLevel++;
+            this->loadNextLevel();
+        }else{
+            //if it is, update the level array and the player's current position
+            if(PLAYER_X_POS_CHANGE != 0){
+                this->player.updateXPos(playerXPos + PLAYER_X_POS_CHANGE);
+            }else{
+                this->player.updateYPos(playerYPos + PLAYER_Y_POS_CHANGE);
+            }
+            this->levelArray[playerYPos  + PLAYER_Y_POS_CHANGE][playerXPos + PLAYER_X_POS_CHANGE] = 'P';
+            this->levelArray[playerYPos][playerXPos] = ' ';
+        }
+    }
 }
 
 #endif
