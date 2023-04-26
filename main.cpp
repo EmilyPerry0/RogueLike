@@ -97,7 +97,7 @@ int main()
             }
             //make movement a little bit more controllable
             if(event.type == Event::KeyPressed){
-                sleep(milliseconds(30));
+                sleep(milliseconds(25));
             }
         }
     }
