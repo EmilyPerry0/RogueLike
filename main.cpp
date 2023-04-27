@@ -170,11 +170,7 @@ int main()
             }
             //make movement a little bit more controllable
             if(event.type == Event::KeyPressed){
-<<<<<<< HEAD
                 this_thread::sleep_for(chrono::milliseconds(30));
-=======
-                sleep(milliseconds(25));
->>>>>>> e9deadeb96763a0ed86b2b9d7b818b187a896dbc
             }
         }
     }
