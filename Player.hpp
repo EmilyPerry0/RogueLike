@@ -1,3 +1,5 @@
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 #include <string>
 #include <vector>
 
@@ -87,3 +89,4 @@ void Player::updateYPos(const int NEW_POS){
 void Player::addItem(const std::string ITEM_TO_ADD){
     this->itemList.push_back(ITEM_TO_ADD);
 }
+#endif

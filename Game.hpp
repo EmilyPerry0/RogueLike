@@ -8,6 +8,7 @@
 
 #include "item.hpp"
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 class Game{
     public:
@@ -16,8 +17,10 @@ class Game{
     std::vector<Item> initItems();
     void loadNextLevel();
     char getElementAtPos(const int X_POS, const int Y_POS) const;
+    bool getInEnemyEncounter() const;
     void updatePlayerPos(char direction);
     void playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PLAYER_Y_POS_CHANGE);
+    void setUpNewEnemy();
     
     private:
     std::vector<Item> items;
@@ -28,6 +31,8 @@ class Game{
     const int MAX_X = 60;
     const int MAX_Y = 40;
     Player player;
+    Enemy currEnemy;
+    bool inEnemyEncounter;
 
 };
 
@@ -37,6 +42,7 @@ class Game{
 Game::Game(){
     this->items = initItems();
     this->currLevel = 0;
+    this->inEnemyEncounter = false;
 }
 
 /**
@@ -113,6 +119,13 @@ char Game::getElementAtPos(const int X_POS, const int Y_POS) const {
 }
 
 /**
+ * @brief getter function for inEnemyEncounter
+*/
+bool Game::getInEnemyEncounter() const{
+    return this->inEnemyEncounter;
+}
+
+/**
  * @brief updates the player's position based on the key pressed
 */
 void Game::updatePlayerPos(const char KEY){
@@ -143,6 +156,10 @@ void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PL
             //the player has reached the end space, so load the next level
             this->currLevel++;
             this->loadNextLevel();
+        }else if(this->levelArray[playerYPos  + PLAYER_Y_POS_CHANGE][playerXPos + PLAYER_X_POS_CHANGE] == 'M'){
+            //player has run into an enemy. run enemy encounter
+            this->inEnemyEncounter = true;
+            this->setUpNewEnemy();
         }else{
             //if it is, update the level array and the player's current position
             if(PLAYER_X_POS_CHANGE != 0){
@@ -154,6 +171,13 @@ void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PL
             this->levelArray[playerYPos][playerXPos] = ' ';
         }
     }
+}
+
+/**
+ * @brief sets up a new enemy with the appropriate stats
+*/
+void Game::setUpNewEnemy(){
+    this->currEnemy.setEnemyLevel(this->currLevel);
 }
 
 #endif

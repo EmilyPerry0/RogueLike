@@ -1,7 +1,8 @@
 #include "Game.hpp"
 
 #include <SFML/Graphics.hpp>
-#include "time.h"
+#include <chrono>
+#include <thread>
 
 using namespace sf;
 using namespace std;
@@ -35,46 +36,118 @@ int main()
         return -1;
     }
 
+    //load in the enemy
+    Texture enemyTexture;
+    if(!enemyTexture.loadFromFile("data/mario.png")){
+        cerr << "Could not load enemy sprite" << endl;
+        return -2;
+    }
+
+    //load in the enconuter screen
+    Texture encounterScreen;
+    if(!encounterScreen.loadFromFile("data/encounterScreen.jpg")){
+        cerr << "Could not load encounter screen" << endl;
+        return -3;
+    }
+
+    //load in the font
+    Font font;
+    if(!font.loadFromFile("data/arial.ttf")){
+        cerr << "Could not load font" << endl;
+        return -4;
+    }
+
     Sprite characterSprite;
     characterSprite.setTexture(characterTexture);
+
+    Sprite enemySprite;
+    enemySprite.setTexture(enemyTexture);
+
+    Sprite encounterScreenSprite;
+    encounterScreenSprite.setTexture(encounterScreen);
+    
 
     //while running
     while( window.isOpen() ) {
         //clear any existing contents
         window.clear();
 
-        //draw all things in the level
-        for(int x = 0; x < 60; x++){
-            for(int y = 0; y < 40; y++){
-                char element = rogueLike.getElementAtPos(x, y);
-                if(element == '#'){
-                    //walls
-                    RectangleShape newRect;
-                    newRect.setSize(Vector2f(20, 20));
-                    newRect.setFillColor(Color::Blue);
-                    newRect.setPosition(x * 20, y * 20);
-                    window.draw(newRect);
-                }else if(element == 'P'){
-                    //character
-                    characterSprite.setPosition(x * 20, y * 20);
-                    window.draw(characterSprite);
-                }else if(element == 'E'){
-                    //exit space
-                    RectangleShape newRect;
-                    newRect.setSize(Vector2f(20, 20));
-                    newRect.setFillColor(Color::Green);
-                    newRect.setPosition(x * 20, y * 20);
-                    window.draw(newRect);
+        //are we in an enemy encounter?
+        if(rogueLike.getInEnemyEncounter()){
+            //draw the encounter screen so that it covers the whole screen
+            encounterScreenSprite.setPosition(0,0);
+            window.draw(encounterScreenSprite);
+
+
+            //make the character sprite and the enemy sprite beeg
+            characterSprite.setScale(Vector2f(5, 5));
+            enemySprite.setScale(Vector2f(5,5));
+
+            //draw the character in the nearby thing and the enemy on the opposite pad
+            characterSprite.setPosition(300, 450);
+            enemySprite.setPosition(850, 200);
+            window.draw(characterSprite);
+            window.draw(enemySprite);
+
+            //draw the names of you and the enemy
+            Text enemyName;
+            Text playerName;
+
+            enemyName.setFont(font);
+            playerName.setFont(font);
+
+            enemyName.setString("Enemy");
+            playerName.setString("Player");
+
+            enemyName.setPosition(100, 100);
+            playerName.setPosition(710, 390);
+
+            enemyName.setFillColor(Color::Black);
+            playerName.setFillColor(Color::Black);
+
+            window.draw(playerName);
+            window.draw(enemyName);
+
+        }else{
+            //draw all things in the level
+            for(int x = 0; x < 60; x++){
+                for(int y = 0; y < 40; y++){
+                    char element = rogueLike.getElementAtPos(x, y);
+                    if(element == '#'){
+                        //walls
+                        RectangleShape newRect;
+                        newRect.setSize(Vector2f(20, 20));
+                        newRect.setFillColor(Color::Blue);
+                        newRect.setPosition(x * 20, y * 20);
+                        window.draw(newRect);
+                    }else if(element == 'P'){
+                        //character
+                        characterSprite.setPosition(x * 20, y * 20);
+                        window.draw(characterSprite);
+                    }else if(element == 'E'){
+                        //exit space
+                        RectangleShape newRect;
+                        newRect.setSize(Vector2f(20, 20));
+                        newRect.setFillColor(Color::Green);
+                        newRect.setPosition(x * 20, y * 20);
+                        window.draw(newRect);
+                    }else if(element == 'M'){
+                        //enemy (marios)
+                        enemySprite.setPosition(x* 20, y * 20);
+                        window.draw(enemySprite);
+                    }
                 }
             }
         }
+
+        
 
 
         //display the stuff we just drew
         window.display();
 
         //run at 24 fps so we don't eat up the cpu and graphics processing like it's ice cream at mines market
-        sleep(milliseconds(41.66667));
+        window.setFramerateLimit(24);
     
         //event handling
         while( window.pollEvent(event) ) {
@@ -97,7 +170,7 @@ int main()
             }
             //make movement a little bit more controllable
             if(event.type == Event::KeyPressed){
-                sleep(milliseconds(30));
+                this_thread::sleep_for(chrono::milliseconds(30));
             }
         }
     }
