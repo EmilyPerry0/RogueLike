@@ -1,3 +1,2 @@
 # RogueLike
-CSCI 200 Create Project
-uses sfml
+CSCI 200 Create Project that uses sfml

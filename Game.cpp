@@ -3,7 +3,7 @@
 #include <iostream>
 
 Game::Game(){
-    this->weapons = initWeapons();
+    this->allWeapons = initWeapons();
     this->currLevel = 0;
     this->inEnemyEncounter = false;
 }
@@ -15,10 +15,17 @@ void Game::playGame(){
 
 
 std::vector<Weapon> Game::initWeapons(){
-    std::vector<Weapon> weapons;
+    std::vector<Weapon> allWeapons;
+
+    //initialize all the weapons
+    Weapon stick("Stick", 1);
     Weapon shortSword("Short Sword", 5);
-    weapons.push_back(shortSword);
-    return weapons;
+
+    //add the weapons to the weapons vector
+    allWeapons.push_back(stick);
+    allWeapons.push_back(shortSword);
+
+    return allWeapons;
 }
 
 void Game::loadNextLevel(){
@@ -114,5 +121,18 @@ void Game::setUpNewEnemy(){
 
 void Game::attack(){
     //damage the enemy
-    // this->currEnemy.setCurrHP(-1*)
+    this->currEnemy.setCurrHP(-1*(this->player.getCurrWeapon().getDamage()));
+
+    //check to see if the enemy is dead
+    if(this->currEnemy.getCurrHP() <= 0){
+        this->inEnemyEncounter = false;
+    }
+
+    //enemy damages player
+    this->player.updateHP(-1*(this->currEnemy.getDamageCapability()));
+
+    //check to see if the player is dead
+    if(this->player.getHP() <= 0){
+        this->inEnemyEncounter = false;
+    }
 }

@@ -1,3 +1,6 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include "Enemy.h"
 #include "Player.h"
 #include "Weapon.h"
@@ -60,7 +63,7 @@ class Game{
     void attack();
 
     private:
-    std::vector<Weapon> weapons;
+    std::vector<Weapon> allWeapons;
     std::ofstream outputFile;
     std::ifstream levelFile;
     int currLevel;
@@ -70,5 +73,6 @@ class Game{
     Player player;
     Enemy currEnemy;
     bool inEnemyEncounter;
-    Weapon currWeapon;
+    bool inChestOpening;
 };
+#endif

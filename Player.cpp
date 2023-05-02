@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include "Weapon.h"
 
 Player::Player(){
     this->hp = 5;
@@ -24,8 +24,8 @@ int Player::getYPos() const{
     return this->yPos;
 }
 
-std::string Player::getWeaponAtPos(const int POS){
-    return this->weaponList.at(POS);
+Weapon Player::getCurrWeapon() const{
+    return this->currWeapon;
 }
 
 void Player::updateHP(const int TO_ADD){
@@ -50,6 +50,7 @@ void Player::updateYPos(const int NEW_POS){
     this->yPos = NEW_POS;
 }
 
-void Player::addWeapon(const std::string WEAPON_TO_ADD){
+void Player::addWeapon(const Weapon WEAPON_TO_ADD){
     this->weaponList.push_back(WEAPON_TO_ADD);
+    this->currWeapon = WEAPON_TO_ADD;
 }

@@ -44,11 +44,18 @@ int main()
         return -2;
     }
 
-    //load in the enconuter screen
+    //load in the encounter screen
     Texture encounterScreen;
     if(!encounterScreen.loadFromFile("data/encounterScreen.jpg")){
         cerr << "Could not load encounter screen" << endl;
         return -3;
+    }
+
+    //load in the chest
+    Texture chestTexture;
+    if(!chestTexture.loadFromFile("data/chest.jpg")){
+        cerr << "could not load chest sprite" << endl;
+        return -4;
     }
 
     //load in the font
@@ -57,7 +64,8 @@ int main()
         cerr << "Could not load font" << endl;
         return -4;
     }
-
+    
+    //sprite setup
     Sprite characterSprite;
     characterSprite.setTexture(characterTexture);
 
@@ -66,6 +74,9 @@ int main()
 
     Sprite encounterScreenSprite;
     encounterScreenSprite.setTexture(encounterScreen);
+
+    Sprite chestSprite;
+    chestSprite.setTexture(chestTexture);
 
     //while running
     while( window.isOpen() ) {
@@ -145,6 +156,10 @@ int main()
                         //enemy (marios)
                         enemySprite.setPosition(x* 20, y * 20);
                         window.draw(enemySprite);
+                    }else if (element == 'C'){
+                        //chests
+                        chestSprite.setPosition(x * 20, y * 20);
+                        window.draw(chestSprite);
                     }
                 }
             }
