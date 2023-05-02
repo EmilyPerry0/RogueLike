@@ -1,7 +1,8 @@
-#include "Game.hpp"
+#include "Game.h"
 
-#include <SFML/Graphics.hpp>
 #include <chrono>
+#include <iostream>
+#include <SFML/Graphics.hpp>
 #include <thread>
 
 using namespace sf;
@@ -65,22 +66,17 @@ int main()
 
     Sprite encounterScreenSprite;
     encounterScreenSprite.setTexture(encounterScreen);
-    
 
     //while running
     while( window.isOpen() ) {
         //clear any existing contents
         window.clear();
 
-        int currButtonChoice = 0;
-        bool itemScreen = false;
-
         //are we in an enemy encounter?
         if(rogueLike.getInEnemyEncounter()){
             //draw the encounter screen so that it covers the whole screen
             encounterScreenSprite.setPosition(0,0);
             window.draw(encounterScreenSprite);
-
 
             //make the character sprite and the enemy sprite beeg
             characterSprite.setScale(Vector2f(5, 5));
@@ -111,48 +107,17 @@ int main()
             window.draw(playerName);
             window.draw(enemyName);
 
-            //draw the attack and item buttons
+            //draw the attack button
             RectangleShape attackButton;
-            RectangleShape itemsButton;
             Text attackText;
-            Text itemsText;
-
-            attackButton.setSize(Vector2f(550, 150));
-            itemsButton.setSize(Vector2f(550, 150));
-
+            attackButton.setSize(Vector2f(1100, 150));
             attackButton.setFillColor(Color::Red);
-            itemsButton.setFillColor(Color::Blue);
-
             attackButton.setPosition(50, 600);
-            itemsButton.setPosition(600, 600);
-
             window.draw(attackButton);
-            window.draw(itemsButton);
-
-            attackText.setString("Attack");
-            itemsText.setString("Items");
-
+            attackText.setString("Attack (enter)");
             attackText.setFont(font);
-            itemsText.setFont(font);
-
-            attackText.setPosition(250, 650);
-            itemsText.setPosition(800, 650);
-
+            attackText.setPosition(500, 650);
             window.draw(attackText);
-            window.draw(itemsText);
-
-            //display which button is being highlighted
-            RectangleShape buttonHighlight;
-            buttonHighlight.setFillColor(Color(255,255,255));
-            buttonHighlight.setSize(Vector2f(100, 10));
-            if(currButtonChoice == 0){
-                //draw the highlight under the left button
-                buttonHighlight.setPosition(250, 700);
-            //otherwise draw it under the right button
-            }else{
-                buttonHighlight.setPosition(800, 700);
-            }
-            window.draw(buttonHighlight);
         }else{
             //draw all things in the level
             for(int x = 0; x < 60; x++){
@@ -184,10 +149,6 @@ int main()
                 }
             }
         }
-
-        
-
-
         //display the stuff we just drew
         window.display();
 
@@ -200,14 +161,11 @@ int main()
             if(event.type == Event::Closed) {
                 //tell the window to close
                 window.close();
+            }
             //if we are in the battle screen
             if(rogueLike.getInEnemyEncounter()){
-                if(Keyboard::isKeyPressed(Keyboard::A)){
-                //move the cursor thing left
-                currButtonChoice = 0;
-                }else if(Keyboard::isKeyPressed(Keyboard::D)){
-                //move the cursor thing left
-                currButtonChoice = 1;
+                if(Keyboard::isKeyPressed(Keyboard::Enter)){
+                    // rogueLike.
                 }
             //otherwise we are not in the battle screen
             }else{
@@ -228,7 +186,6 @@ int main()
                 if(event.type == Event::KeyPressed){
                     this_thread::sleep_for(chrono::milliseconds(30));
                 }
-            }
             }
         }
     }

@@ -1,5 +1,5 @@
 TARGET = rogueLike
-SRC_FILES = main.cpp Game.hpp Item.hpp
+SRC_FILES = main.cpp Game.cpp Enemy.cpp Player.cpp Weapon.cpp
 
 CXX = g++
 CFLAGS = -Wall -g -std=c++11
@@ -55,8 +55,6 @@ clean:
 	$(DEL) $(TARGET) $(OBJECTS)
 
 # DEPENDENCIES
-Item.o: Item.hpp
-Game.o: Game.hpp Item.hpp
-main.o: main.cpp Game.hpp
+main.o: main.cpp
 
 .PHONY: all clean

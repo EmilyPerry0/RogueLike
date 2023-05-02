@@ -1,78 +1,26 @@
-#ifndef GAME_HPP
-#define GAME_HPP
+#include "Game.h"
 
-#include <string>
-#include <vector>
 #include <iostream>
-#include <fstream>
 
-#include "item.hpp"
-#include "Player.hpp"
-#include "Enemy.hpp"
-
-class Game{
-    public:
-    Game();
-    void playGame();
-    std::vector<Item> initItems();
-    void loadNextLevel();
-    char getElementAtPos(const int X_POS, const int Y_POS) const;
-    bool getInEnemyEncounter() const;
-    void updatePlayerPos(char direction);
-    void playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PLAYER_Y_POS_CHANGE);
-    void setUpNewEnemy();
-    
-    private:
-    std::vector<Item> items;
-    std::ofstream outputFile;
-    std::ifstream levelFile;
-    int currLevel;
-    char levelArray[40][60];
-    const int MAX_X = 60;
-    const int MAX_Y = 40;
-    Player player;
-    Enemy currEnemy;
-    bool inEnemyEncounter;
-
-};
-
-/**
- * @brief constructs a new Game object
-*/
 Game::Game(){
-    this->items = initItems();
+    this->weapons = initWeapons();
     this->currLevel = 0;
     this->inEnemyEncounter = false;
 }
 
-/**
- * @brief main game loop
- * 
- */
 void Game::playGame(){
     //start by going to the first level
     this->loadNextLevel();
 }
 
-/**
- * @brief initializes all possible items
- * @return the vector containing all items
-*/
-std::vector<Item> Game::initItems(){
-    std::cout << "Initializing all items..." << std::endl;
 
-    std::vector<Item> items;
-
-    Item shortSword("Short Sword", 'W', "The most basic sword.", 5);
-
-    items.push_back(shortSword);
-
-    return items;
+std::vector<Weapon> Game::initWeapons(){
+    std::vector<Weapon> weapons;
+    Weapon shortSword("Short Sword", 5);
+    weapons.push_back(shortSword);
+    return weapons;
 }
 
-/**
- * @brief loads level data from premade files into a 2d array to prep for gameplay 
- */
 void Game::loadNextLevel(){
     //levels are 60*40 rectangles
     //character key: # = wall, P = player, E = exit space
@@ -110,24 +58,14 @@ void Game::loadNextLevel(){
     this->levelFile.close();
 }
 
-/**
- * @brief getter function for things in the level array
- * @return the char at a certain position in the level array
-*/
 char Game::getElementAtPos(const int X_POS, const int Y_POS) const {
     return this->levelArray[Y_POS][X_POS];
 }
 
-/**
- * @brief getter function for inEnemyEncounter
-*/
 bool Game::getInEnemyEncounter() const{
     return this->inEnemyEncounter;
 }
 
-/**
- * @brief updates the player's position based on the key pressed
-*/
 void Game::updatePlayerPos(const char KEY){
     //player moving up
     if(KEY == 'w'){
@@ -144,9 +82,6 @@ void Game::updatePlayerPos(const char KEY){
     }
 }
 
-/**
- * @brief updates the player's positon based on which direction they should move
-*/
 void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PLAYER_Y_POS_CHANGE){
     int playerXPos = this->player.getXPos();
     int playerYPos = this->player.getYPos();
@@ -173,11 +108,11 @@ void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PL
     }
 }
 
-/**
- * @brief sets up a new enemy with the appropriate stats
-*/
 void Game::setUpNewEnemy(){
     this->currEnemy.setEnemyLevel(this->currLevel);
 }
 
-#endif
+void Game::attack(){
+    //damage the enemy
+    // this->currEnemy.setCurrHP(-1*)
+}
