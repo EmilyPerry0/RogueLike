@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "Weapon.h"
+#include "Chest.h"
 
 #include <fstream>
 #include <vector>
@@ -25,6 +26,13 @@ class Game{
  * @return the vector containing all weapons
 */
     std::vector<Weapon> initWeapons();
+
+/**
+ * @brief initialized all possible chests and their contents
+ * 
+ * @return the vector containing all chests
+ */
+    std::vector<Chest> initChests();
 
 /**
  * @brief loads level data from premade files into a 2d array to prep for gameplay 
@@ -62,8 +70,30 @@ class Game{
 */
     void attack();
 
+/**
+ * @brief Get the In Chest Opening state
+ */
+    bool getInChestOpening();
+
+/**
+ * @brief opens a chest and sets the player's current weapon as the new weapon
+ */
+    void openChest(const int chestNum);
+
+/**
+ * @brief Get the weapon the player currently has equipped
+ */
+    Weapon getCurrWeapon();
+
+/**
+ * @brief leave the chest opening screen
+ * 
+ */
+    void leaveChestOpening();
+
     private:
     std::vector<Weapon> allWeapons;
+    std::vector<Chest> allChests;
     std::ofstream outputFile;
     std::ifstream levelFile;
     int currLevel;

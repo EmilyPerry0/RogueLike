@@ -4,6 +4,8 @@
 
 Game::Game(){
     this->allWeapons = initWeapons();
+    this->allChests = initChests();
+    this->player.addWeapon(allWeapons.at(0));
     this->currLevel = 0;
     this->inEnemyEncounter = false;
     this->inChestOpening = false;
@@ -27,6 +29,20 @@ std::vector<Weapon> Game::initWeapons(){
     allWeapons.push_back(shortSword);
 
     return allWeapons;
+}
+
+std::vector<Chest> Game::initChests(){
+    std::vector<Chest> allChests;
+
+    //initialize all the weapons
+    Chest stickChest(this->allWeapons.at(0));
+    Chest shortSwordChest(this->allWeapons.at(1));
+
+    //add the chests to the chests vector
+    allChests.push_back(stickChest);
+    allChests.push_back(shortSwordChest);
+
+    return allChests;
 }
 
 void Game::loadNextLevel(){
@@ -96,17 +112,20 @@ void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PL
     char spaceToCheck = this->levelArray[playerYPos  + PLAYER_Y_POS_CHANGE][playerXPos + PLAYER_X_POS_CHANGE];
     //make sure the space the player wants to move to is open
     if(spaceToCheck != '#'){
+        if(spaceToCheck >= 48 && spaceToCheck <= 57){
+            //player has run into a chest, run chest opening sequence
+            this->inChestOpening = true;
+            this->openChest(spaceToCheck-48);
+        }
+        if(spaceToCheck == 'M'){
+            //player has run into an enemy. run enemy encounter
+            this->inEnemyEncounter = true;
+            this->setUpNewEnemy();
+        }
         if(spaceToCheck == 'E'){
             //the player has reached the end space, so load the next level
             this->currLevel++;
             this->loadNextLevel();
-        }else if(spaceToCheck == 'M'){
-            //player has run into an enemy. run enemy encounter
-            this->inEnemyEncounter = true;
-            this->setUpNewEnemy();
-        }else if(spaceToCheck == 'C'){
-            //player has run into a chest, run chest opening sequence
-            this->inChestOpening = true;
         }else{
             //if it is, update the level array and the player's current position
             if(PLAYER_X_POS_CHANGE != 0){
@@ -121,7 +140,7 @@ void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PL
 }
 
 void Game::setUpNewEnemy(){
-    this->currEnemy.setEnemyLevel(this->currLevel);
+    this->currEnemy.setEnemyLevel(this->currLevel + 1);
 }
 
 void Game::attack(){
@@ -130,7 +149,10 @@ void Game::attack(){
 
     //check to see if the enemy is dead
     if(this->currEnemy.getCurrHP() <= 0){
+        //leave the encounter
         this->inEnemyEncounter = false;
+        std::cout << "enemy HP: " << currEnemy.getCurrHP() << std::endl
+                  << "your HP: " << player.getHP() << std::endl;
     }
 
     //enemy damages player
@@ -140,4 +162,21 @@ void Game::attack(){
     if(this->player.getHP() <= 0){
         this->inEnemyEncounter = false;
     }
+}
+
+bool Game::getInChestOpening(){
+    return this->inChestOpening;
+}
+
+void Game::openChest(const int CHEST_NUM){
+    this->player.addWeapon(this->allChests.at(CHEST_NUM).getChestContents());
+}
+
+Weapon Game::getCurrWeapon(){
+    return this->player.getCurrWeapon();
+}
+
+void Game::leaveChestOpening(){
+    //delete the chest from the level array
+    this->inChestOpening = false;
 }

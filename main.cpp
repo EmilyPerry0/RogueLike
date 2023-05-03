@@ -144,6 +144,7 @@ int main()
                     }else if(element == 'P'){
                         //character
                         characterSprite.setPosition(x * 20, y * 20);
+                        characterSprite.setScale(1, 1);
                         window.draw(characterSprite);
                     }else if(element == 'E'){
                         //exit space
@@ -155,13 +156,33 @@ int main()
                     }else if(element == 'M'){
                         //enemy (marios)
                         enemySprite.setPosition(x* 20, y * 20);
+                        enemySprite.setScale(1,1);
                         window.draw(enemySprite);
-                    }else if (element == 'C'){
+                    }else if (element >= 48 && element <= 57){
                         //chests
                         chestSprite.setPosition(x * 20, y * 20);
                         window.draw(chestSprite);
                     }
                 }
+            }
+            //do the chest overlay if we are in a chest encounter
+            if(rogueLike.getInChestOpening()){
+                //draw the text box background
+                RectangleShape textBoxBackground;
+                textBoxBackground.setSize(Vector2f(1100, 150));
+                textBoxBackground.setFillColor(Color::White);
+                textBoxBackground.setPosition(50, 600);
+                window.draw(textBoxBackground);
+
+                //draw the text about the chest contents
+                Text chestContentsInfo;
+                chestContentsInfo.setFont(font);
+                chestContentsInfo.setFillColor(Color::Black);
+                string chestInfo = "You found a new Weapon! Name: " + rogueLike.getCurrWeapon().getName() + 
+                                   "  Damage: " + to_string(rogueLike.getCurrWeapon().getDamage()) + " (Enter)";
+                chestContentsInfo.setString(chestInfo);
+                chestContentsInfo.setPosition(100, 660);
+                window.draw(chestContentsInfo);
             }
         }
         //display the stuff we just drew
@@ -179,10 +200,18 @@ int main()
             }
             //if we are in the battle screen
             if(rogueLike.getInEnemyEncounter()){
-                if(Keyboard::isKeyPressed(Keyboard::Enter)){
-                    // rogueLike.
+                if(event.type == Event::KeyReleased){
+                    //fix this!!!
+                    rogueLike.attack();
                 }
-            //otherwise we are not in the battle screen
+            }
+            //if we are in a chest opening screen
+            else if(rogueLike.getInChestOpening()){
+                if(Keyboard::isKeyPressed(Keyboard::Enter)){
+                    //go out of the chest opening screen
+                    rogueLike.leaveChestOpening();
+                }
+            //otherwise we are not in the battle screen or the chest opening screen
             }else{
                 if(Keyboard::isKeyPressed(Keyboard::W)){
                 //move up

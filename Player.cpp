@@ -2,8 +2,8 @@
 #include "Weapon.h"
 
 Player::Player(){
-    this->hp = 5;
-    this->maxHP = 5;
+    this->hp = 50;
+    this->maxHP = 50;
     this->xPos = 0;
     this->yPos = 0;
 }

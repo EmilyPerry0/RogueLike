@@ -4,6 +4,8 @@ Enemy::Enemy(){
     this->maxHP = 10;
     this->currHP = this->maxHP;
     this->damageCapability = 1;
+    // this->xPos = X_POS;
+    // this->yPos = Y_POS;
 }
 
 int Enemy::getMaxHP() const {
@@ -27,3 +29,11 @@ void Enemy::setEnemyLevel(const int LEVEL){
 void Enemy::setCurrHP(const int AMT){
     this->currHP += AMT;
 }
+
+// int Enemy::getXPos(){
+//     return this->xPos;
+// }
+
+// int Enemy::getYPos(){
+//     return this->yPos;
+// }

@@ -4,7 +4,7 @@
 class Enemy{
 public:
 /**
- * @brief default constructor
+ * @brief constructor
 */
     Enemy();
 
@@ -32,9 +32,21 @@ public:
  * @brief mutator function for currHP. adds the amount of HP in AMT
 */
     void setCurrHP(const int AMT);
+
+/**
+ * @brief getter function for the X Pos
+//  */
+//     int getXPos();
+
+// /**
+//  * @brief getter function for the X Pos
+//  */
+//     int getYPos();
 private:
     int maxHP;
     int currHP;
     int damageCapability;
+    // int xPos;
+    // int yPos;
 };
 #endif
