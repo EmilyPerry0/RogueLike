@@ -91,6 +91,24 @@ class Game{
  */
     void leaveChestOpening();
 
+/**
+ * @brief gets the player's max hp
+*/
+    int getPlayerMaxHP();
+/**
+ * @brief gets the player's hp
+*/
+    int getPlayerCurrHP();
+
+/**
+ * @brief gets the enemy's max hp
+*/
+    int getEnemyMaxHP();
+/**
+ * @brief gets the Enemy's hp
+*/
+    int getEnemyCurrHP();
+
     private:
     std::vector<Weapon> allWeapons;
     std::vector<Chest> allChests;

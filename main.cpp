@@ -129,6 +129,22 @@ int main()
             attackText.setFont(font);
             attackText.setPosition(500, 650);
             window.draw(attackText);
+            
+            //draw enemy and player hp bars
+            RectangleShape playerHpBar;
+            playerHpBar.setFillColor(Color::Green);
+            playerHpBar.setSize(Vector2f(250/((double)rogueLike.getPlayerMaxHP()/rogueLike.getPlayerCurrHP()), 35));
+            playerHpBar.setPosition(870, 440);
+            window.draw(playerHpBar);
+
+            RectangleShape EnemyHpBar;
+            EnemyHpBar.setFillColor(Color::Green);
+            EnemyHpBar.setSize(Vector2f(250/((double)rogueLike.getEnemyMaxHP()/rogueLike.getEnemyCurrHP()), 35));
+            EnemyHpBar.setPosition(260, 150);
+            window.draw(EnemyHpBar);
+
+
+
         }else{
             //draw all things in the level
             for(int x = 0; x < 60; x++){
@@ -200,8 +216,7 @@ int main()
             }
             //if we are in the battle screen
             if(rogueLike.getInEnemyEncounter()){
-                if(event.type == Event::KeyReleased){
-                    //fix this!!!
+                if(Keyboard::isKeyPressed(Keyboard::Enter)){
                     rogueLike.attack();
                 }
             }
