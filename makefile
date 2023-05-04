@@ -1,4 +1,4 @@
-TARGET = rogueLike
+TARGET = FP
 SRC_FILES = main.cpp Game.cpp Enemy.cpp Player.cpp Weapon.cpp Chest.cpp
 
 CXX = g++
