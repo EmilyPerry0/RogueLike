@@ -1,3 +1,13 @@
+/* CSCI 200: Final Project: RogueLike
+ *
+ * Author: Emily Perry
+ * Resources used: Ed, private email communication with professors to help me figure out how to 
+ * do file i/o for specific things. Other students helped me with small debugging problems. 
+ * The SFML + cpp docs helped with syntax and how things worked so I could implement them.
+ *
+ * header file for the game class
+ */
+
 #ifndef GAME_H
 #define GAME_H
 
@@ -16,10 +26,6 @@ class Game{
  * @brief constructs a new Game object
 */
     Game();
-/**
- * @brief main game
- */
-    void playGame();
 
 /**
  * @brief initializes all possible weapons
@@ -73,17 +79,17 @@ class Game{
 /**
  * @brief Get the In Chest Opening state
  */
-    bool getInChestOpening();
+    bool getInChestOpening() const;
 
 /**
  * @brief opens a chest and sets the player's current weapon as the new weapon
  */
-    void openChest(const int chestNum);
+    void openChest(const int CHEST_NUM);
 
 /**
  * @brief Get the weapon the player currently has equipped
  */
-    Weapon getCurrWeapon();
+    Weapon getCurrWeapon()const;
 
 /**
  * @brief leave the chest opening screen
@@ -94,30 +100,29 @@ class Game{
 /**
  * @brief gets the player's max hp
 */
-    int getPlayerMaxHP();
+    int getPlayerMaxHP()const;
 /**
  * @brief gets the player's hp
 */
-    int getPlayerCurrHP();
+    int getPlayerCurrHP()const;
 
 /**
  * @brief gets the enemy's max hp
 */
-    int getEnemyMaxHP();
+    int getEnemyMaxHP()const;
 /**
  * @brief gets the Enemy's hp
 */
-    int getEnemyCurrHP();
+    int getEnemyCurrHP()const;
 
     private:
     std::vector<Weapon> allWeapons;
     std::vector<Chest> allChests;
-    std::ofstream outputFile;
     std::ifstream levelFile;
     int currLevel;
     char levelArray[40][60];
-    const int MAX_X = 60;
-    const int MAX_Y = 40;
+   const int MAX_X = 60;
+    const int MAX_Y = 40; 
     Player player;
     Enemy currEnemy;
     bool inEnemyEncounter;

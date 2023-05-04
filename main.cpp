@@ -1,3 +1,15 @@
+/* CSCI 200: Final Project: RogueLike
+ *
+ * Author: Emily Perry
+ * Resources used: Ed, private email communication with professors to help me figure out how to 
+ * do file i/o for specific things. Other students helped me with small debugging problems. 
+ * The SFML + cpp docs helped with syntax and how things worked so I could implement them.
+ *
+ * sets up everything needed for the game and contains the main SFML draw loop so that a
+ * nice lil gui can be used while playing the game. also has event handling so the player can
+ * move n interact with the game n such
+ */
+
 #include "Game.h"
 
 #include <chrono>
@@ -8,19 +20,11 @@
 using namespace sf;
 using namespace std;
 
-void deleteDisplayElements(Shape* elementArray[40][60]){
-    for(int x = 0; x < 60; x++){
-        for(int y = 0; y < 40; y++){
-            delete elementArray[y][x];
-        }
-    }
-}
-
 int main()
 {
     Game rogueLike;
     //start and setup the game w/ command line stuff
-    rogueLike.playGame();
+    rogueLike.loadNextLevel();
     cout << "The game window is now open." << endl << 
             "Please Tap the WASD keys to move." << endl;
 
@@ -62,7 +66,7 @@ int main()
     Font font;
     if(!font.loadFromFile("data/arial.ttf")){
         cerr << "Could not load font" << endl;
-        return -4;
+        return -5;
     }
     
     //sprite setup
@@ -89,11 +93,11 @@ int main()
             encounterScreenSprite.setPosition(0,0);
             window.draw(encounterScreenSprite);
 
-            //make the character sprite and the enemy sprite beeg
+            //make the character sprite and the enemy sprite big
             characterSprite.setScale(Vector2f(5, 5));
             enemySprite.setScale(Vector2f(5,5));
 
-            //draw the character in the nearby thing and the enemy on the opposite pad
+            //draw the character in the nearby pad and the enemy on the opposite pad
             characterSprite.setPosition(300, 450);
             enemySprite.setPosition(850, 200);
             window.draw(characterSprite);
@@ -137,11 +141,11 @@ int main()
             playerHpBar.setPosition(870, 440);
             window.draw(playerHpBar);
 
-            RectangleShape EnemyHpBar;
-            EnemyHpBar.setFillColor(Color::Green);
-            EnemyHpBar.setSize(Vector2f(250/((double)rogueLike.getEnemyMaxHP()/rogueLike.getEnemyCurrHP()), 35));
-            EnemyHpBar.setPosition(260, 150);
-            window.draw(EnemyHpBar);
+            RectangleShape enemyHpBar;
+            enemyHpBar.setFillColor(Color::Green);
+            enemyHpBar.setSize(Vector2f(250/((double)rogueLike.getEnemyMaxHP()/rogueLike.getEnemyCurrHP()), 35));
+            enemyHpBar.setPosition(260, 150);
+            window.draw(enemyHpBar);
 
 
 
@@ -175,7 +179,7 @@ int main()
                         enemySprite.setScale(1,1);
                         window.draw(enemySprite);
                     }else if (element >= 48 && element <= 57){
-                        //chests
+                        //chests (represented by 0-9 to indicate the contents of the chest)
                         chestSprite.setPosition(x * 20, y * 20);
                         window.draw(chestSprite);
                     }
@@ -229,17 +233,17 @@ int main()
             //otherwise we are not in the battle screen or the chest opening screen
             }else{
                 if(Keyboard::isKeyPressed(Keyboard::W)){
-                //move up
-                rogueLike.updatePlayerPos('w');
+                    //move up
+                    rogueLike.updatePlayerPos('w');
                 }else if(Keyboard::isKeyPressed(Keyboard::A)){
-                //move left
-                rogueLike.updatePlayerPos('a');
+                    //move left
+                    rogueLike.updatePlayerPos('a');
                 }else if(Keyboard::isKeyPressed(Keyboard::S)){
-                //move down
-                rogueLike.updatePlayerPos('s');
+                    //move down
+                    rogueLike.updatePlayerPos('s');
                 }else if(Keyboard::isKeyPressed(Keyboard::D)){
-                //move right
-                rogueLike.updatePlayerPos('d');
+                    //move right
+                    rogueLike.updatePlayerPos('d');
                 }
                 //make movement a little bit more controllable
                 if(event.type == Event::KeyPressed){

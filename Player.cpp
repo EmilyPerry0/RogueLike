@@ -1,3 +1,14 @@
+/* CSCI 200: Final Project: RogueLike
+ *
+ * Author: Emily Perry
+ * Resources used: Ed, private email communication with professors to help me figure out how to 
+ * do file i/o for specific things. Other students helped me with small debugging problems. 
+ * The SFML + cpp docs helped with syntax and how things worked so I could implement them.
+ *
+ * implementation of the player class. it stores all of the player data like its position and 
+ * current weapon and current/max hp
+ */
+
 #include "Player.h"
 #include "Weapon.h"
 
@@ -41,12 +52,12 @@ void Player::fillHP(){
 }
 
 void Player::updateXPos(const int NEW_POS){
-    //if the bool is true, update xPos by one (like stepping to the right once),otherwise opp
+    //changes the player's x pos to the new pos
     this->xPos = NEW_POS;
 }
 
 void Player::updateYPos(const int NEW_POS){
-    //if the bool is true, update yPos down by one (like stepping down once),otherwise opp
+    //changes the player's y pos to the new pos
     this->yPos = NEW_POS;
 }
 

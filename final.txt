@@ -1,0 +1,52 @@
+TITLE:
+Emily Perry, Section A, RogueLike
+
+PROBLEM DESCRIPTION:
+This is a roguelike game in which the user explores dungeons and defeats enemies.
+The player incrementally gets stronger as they defeat enemies and gets more
+powerful weapons. There are 6 levels for the player to explore and 10 different
+weapons for the player to discover and use. The enemies get stronger as the player
+goes through the levels. Once the player is strong enough, they can collect the 
+ultimate weapon and defeat the final enemy and win the game!
+
+PROGRAM DOCUMENTATION:
+to run the program, the user must build it with SFML, then simply run the executable.
+the game will handle everything else. Things that could be added would be other items,
+such as potions or health packs. These would be in their own classes and could be
+put into chests, then modify certain player characterisics to achieve the desired effect.
+The player class would probably need some new modifcation functions, and chests would
+need to be modified to hold an item, not just a weapon. The various items and weapons
+could inherit from item to do this. Addionally, someone could add more levels by following
+the naming convention laid out for the level files and editing game.cpp to not end at level 6.
+The things that changed from my original proposal were the taking out of the potions and healthpacks
+and such. I worked most days on the project since it was assigned, but I did not have enough time
+to implement them.
+
+LIST DATA STRUCTURE:
+I chose to use vectors for certain things and arrays for others. I chose vectors 
+because I needed compiletime and runtime variability in the size 
+of the list. Some examples are the weapon vector for the player, which adds a new weapon each time they
+pick up a new one, and the allChests vector, which holds all the chests. This could have been an array
+since it doesnt change during the runtime of the program, but the number of chests I had changed while I 
+was writing the program so it was easier. For arrays, I made the element array an array since it will always
+be the size of the levels which is the same every level.
+
+TESTS:
+1. Whenever the user tries to go through a wall, they get stopped
+2. only the wasd movement keys work while in the overworld, no other buttons can be pressed 
+3. when in an encounter, the only thing a user can do is press enter. nothing else can happen 
+    so no breakage can occurr
+4. when opening a chest, the only thing that can be pressed is enter, so the user cannot move and try 
+    to get out of bounds.
+5. when in the last level, there is no way for the user to change the level or crash the system, since they
+can only move inside the walls and the green spaces no longer do anything.
+
+REFELCTIONS:
+I learned about the importance of seperating things into seperate classes and files. This greatly helped
+me to stay organized in the project and (apart from game.cpp) everything stayed pretty neat. I also learned 
+a lot about SFML. I knew basically nothing prior to this, except for what I learned in L6A, so it was quite 
+a learning experience, but I definitely learned a lot about how to use it. Some problems I encountered were 
+making a variable amount of objects in each level with SFML, but I eventually figured that out. Another problem 
+was how to handle keeping track of things that had already been encountered in the level, and the levelArray 
+solved that. If I had to do this project again, the main thing I would change is to make game.cpp wayyy smaller
+and split it up into seperate classes.

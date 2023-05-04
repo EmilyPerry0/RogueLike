@@ -1,3 +1,13 @@
+/* CSCI 200: Final Project: RogueLike
+ *
+ * Author: Emily Perry
+ * Resources used: Ed, private email communication with professors to help me figure out how to 
+ * do file i/o for specific things. Other students helped me with small debugging problems. 
+ * The SFML + cpp docs helped with syntax and how things worked so I could implement them.
+ *
+ * implementation of the main game logic + loop
+ */
+
 #include "Game.h"
 
 #include <iostream>
@@ -10,12 +20,6 @@ Game::Game(){
     this->inEnemyEncounter = false;
     this->inChestOpening = false;
 }
-
-void Game::playGame(){
-    //start by going to the first level
-    this->loadNextLevel();
-}
-
 
 std::vector<Weapon> Game::initWeapons(){
     std::vector<Weapon> allWeapons;
@@ -78,7 +82,7 @@ std::vector<Chest> Game::initChests(){
 
 void Game::loadNextLevel(){
     //levels are 60*40 rectangles
-    //character key: # = wall, P = player, E = exit space
+    //character key: # = wall, P = player, E = exit space, M=enemy(mario), nums 0-9 = chest
     int xPos;
     int yPos;
 
@@ -145,6 +149,8 @@ void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PL
         if(spaceToCheck >= 48 && spaceToCheck <= 57){
             //player has run into a chest, run chest opening sequence
             this->inChestOpening = true;
+            //get the number of the chest by subtracting 48 from the ascii value of the
+            //number, which just gets the regular number as an int
             this->openChest(spaceToCheck-48);
         }
         if(spaceToCheck == 'M'){
@@ -157,7 +163,7 @@ void Game::playerSpaceCheckAndUpdate(const int PLAYER_X_POS_CHANGE, const int PL
             this->currLevel++;
             this->loadNextLevel();
         }else{
-            //if it is, update the level array and the player's current position
+            //if the space is open, update the level array and the player's current position
             if(PLAYER_X_POS_CHANGE != 0){
                 this->player.updateXPos(playerXPos + PLAYER_X_POS_CHANGE);
             }else{
@@ -193,7 +199,7 @@ void Game::attack(){
 
     //check to see if the player is dead
     if(this->player.getHP() <= 0){
-        //load first level back in (but the player gets to keep their weapons)
+        //load first level back in (but the player gets to keep their weapons + maxhp)
         this->currLevel = 0;
         this->loadNextLevel();
 
@@ -205,7 +211,7 @@ void Game::attack(){
     }
 }
 
-bool Game::getInChestOpening(){
+bool Game::getInChestOpening()const{
     return this->inChestOpening;
 }
 
@@ -213,27 +219,26 @@ void Game::openChest(const int CHEST_NUM){
     this->player.addWeapon(this->allChests.at(CHEST_NUM).getChestContents());
 }
 
-Weapon Game::getCurrWeapon(){
+Weapon Game::getCurrWeapon()const{
     return this->player.getCurrWeapon();
 }
 
 void Game::leaveChestOpening(){
-    //delete the chest from the level array
     this->inChestOpening = false;
 }
 
-int Game::getPlayerMaxHP(){
+int Game::getPlayerMaxHP()const{
     return this->player.getMaxHP();
 }
 
-int Game::getPlayerCurrHP(){
+int Game::getPlayerCurrHP()const{
     return this->player.getHP();
 }
 
-int Game::getEnemyMaxHP(){
+int Game::getEnemyMaxHP()const{
     return this->currEnemy.getMaxHP();
 }
 
-int Game::getEnemyCurrHP(){
+int Game::getEnemyCurrHP()const{
     return this->currEnemy.getCurrHP();
 }
